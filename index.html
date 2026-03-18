@@ -348,7 +348,7 @@ window.doLogin=()=>{
   const u=document.getElementById('l-user').value.trim(),p=document.getElementById('l-pass').value.trim();
   document.getElementById('l-err').textContent='';
   if(role==='admin'){if(u==='admin'&&p==='admin123')showAdmin();else document.getElementById('l-err').textContent='Incorrect username or password.';}
-  else{const s=students.find(st=>String(st.roll)===u&&st.pass===p);if(s)showStudent(s);else document.getElementById('l-err').textContent='Incorrect roll number or password.';}
+  else{const s=students.find(st=>st.username===u&&st.pass===p);if(s)showStudent(s);else document.getElementById('l-err').textContent='Incorrect username or password.';}
 };
 function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function showAdmin(){showScr('screen-admin');renderDash();}
