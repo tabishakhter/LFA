@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>School Management App</title>
+<title>LFA School Portal</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:#fff}
+body{font-family:system-ui,-apple-system,sans-serif}
 .screen{display:none}.screen.active{display:block}
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#2D1B69;position:relative;overflow:hidden}
 .bg-c1{position:absolute;width:400px;height:400px;border-radius:50%;background:#4C2E9A;top:-100px;left:-100px}
@@ -25,9 +25,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#fff}
 .fg input:focus{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15)}
 .btn-full{width:100%;padding:12px;border-radius:10px;border:none;background:#fff;color:#2D1B69;font-size:14px;font-weight:600;cursor:pointer;margin-top:0.25rem;transition:opacity 0.15s}
 .btn-full:hover{opacity:0.9}
-.err{font-size:12px;color:#FCA5A5;margin-top:8px;min-height:16px}
-.hint{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.1);line-height:1.9}
-.hint code{background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;font-size:11px;color:rgba(255,255,255,0.85)}
+.err{font-size:12px;color:#FCA5A5;margin-top:8px;min-height:18px}
 .app{display:flex;min-height:100vh}
 .sidebar{width:200px;background:#2D1B69;padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
 .app-name{font-size:16px;font-weight:600;color:#fff;padding:0 1.25rem 0.25rem}
@@ -51,7 +49,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#fff}
 .btn-green{background:#25D366;color:#fff;border:none;font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer}
 .btn-green:hover{background:#1ebe5a}
 .btn-sm{padding:4px 10px;font-size:12px;border:1px solid #FCA5A5;color:#DC2626;background:#FEF2F2;border-radius:6px;cursor:pointer}
-.btn-sm:hover{background:#FEE2E2}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
 .stat{border-radius:12px;padding:1rem;color:#fff}
 .stat-0{background:#2D1B69}.stat-1{background:#065F46}.stat-2{background:#92400E}.stat-3{background:#5B21B6}
@@ -107,20 +104,20 @@ tr:hover td{background:#F5F3FF}
 .tt-teacher{font-size:11px;color:#6B7280}
 .avatar{width:34px;height:34px;border-radius:50%;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#5B21B6;flex-shrink:0}
 .loading{text-align:center;padding:2rem;color:#9CA3AF;font-size:14px}
-.toast{position:fixed;bottom:24px;right:24px;background:#2D1B69;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;display:none;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.toast{position:fixed;bottom:24px;right:24px;background:#2D1B69;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;display:none}
 .toast.show{display:block}
+.search-box{width:100%;padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;margin-bottom:1rem;outline:none}
+.search-box:focus{border-color:#2D1B69}
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
 
-<!-- LOGIN -->
 <div class="screen active" id="screen-login">
 <div class="login-wrap">
   <div class="bg-c1"></div><div class="bg-c2"></div><div class="bg-c3"></div>
   <div class="login-card">
-    <div class="login-logo">🏫 School</div>
+    <div class="login-logo">🏫 LFA School</div>
     <div class="login-sub">Sign in to your account</div>
     <div class="role-tabs">
       <button class="role-tab active" onclick="setRole('admin')">Admin</button>
@@ -129,17 +126,15 @@ tr:hover td{background:#F5F3FF}
     <div class="fg"><label>Username</label><input id="l-user" placeholder="Enter username" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <div class="fg"><label>Password</label><input id="l-pass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <div class="err" id="l-err"></div>
-    <button class="btn-full" onclick="doLogin()">Sign in</button>
-
+    <button class="btn-full" id="login-btn" onclick="doLogin()">Sign in</button>
   </div>
 </div>
 </div>
 
-<!-- ADMIN -->
 <div class="screen" id="screen-admin">
 <div class="app">
   <div class="sidebar">
-    <div class="app-name">🏫 School</div>
+    <div class="app-name">🏫 LFA School</div>
     <div class="user-pill">Administrator</div>
     <div class="nav">
       <button class="nav-btn active" onclick="aGo('dashboard')"><span class="nav-dot"></span>Dashboard</button>
@@ -161,14 +156,15 @@ tr:hover td{background:#F5F3FF}
       </div>
       <div class="card"><table>
         <thead><tr><th style="width:30%">Name</th><th style="width:20%">Class</th><th style="width:25%">Fee status</th><th style="width:25%">Attendance</th></tr></thead>
-        <tbody id="d-table"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+        <tbody id="d-table"><tr><td colspan="4" class="loading">Loading students...</td></tr></tbody>
       </table></div>
     </div>
     <div class="page" id="a-pg-students">
       <div class="ph"><div class="ptitle">Students</div><button class="btn btn-purple" onclick="openMod('stu')">+ Add student</button></div>
+      <input class="search-box" id="search-stu" placeholder="Search by name or class..." oninput="renderStu()"/>
       <div class="card"><table>
-        <thead><tr><th style="width:20%">Name</th><th style="width:12%">Class</th><th style="width:7%">Roll</th><th style="width:17%">Parent</th><th style="width:15%">Phone</th><th style="width:12%">Password</th><th style="width:10%">Share</th><th style="width:7%"></th></tr></thead>
-        <tbody id="s-table"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
+        <thead><tr><th style="width:22%">Name</th><th style="width:12%">Class</th><th style="width:14%">Username</th><th style="width:18%">Parent</th><th style="width:14%">Password</th><th style="width:10%">Share</th><th style="width:10%"></th></tr></thead>
+        <tbody id="s-table"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
       </table></div>
     </div>
     <div class="page" id="a-pg-fees">
@@ -184,21 +180,19 @@ tr:hover td{background:#F5F3FF}
     </div>
     <div class="page" id="a-pg-attendance">
       <div class="ph"><div class="ptitle">Attendance</div><span style="font-size:12px;color:#9CA3AF">Tap circles to mark present / absent</span></div>
+      <input class="search-box" id="search-att" placeholder="Search student..." oninput="renderAtt()"/>
       <div id="att-list"><div class="loading">Loading...</div></div>
     </div>
   </div>
 </div>
-
-<!-- Modals -->
 <div class="overlay" id="mod-stu">
   <div class="modal">
     <div class="modal-title">Add new student</div>
     <div class="mfg"><label>Full name</label><input id="sn" placeholder="e.g. Rahul Sharma"/></div>
-    <div class="mfg"><label>Class</label><select id="sc"><option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option><option>Class 7</option><option>Class 8</option><option>Class 9</option><option>Class 10</option></select></div>
-    <div class="mfg"><label>Roll number</label><input id="sr" type="number" placeholder="e.g. 12"/></div>
-    <div class="mfg"><label>Parent name</label><input id="sp" placeholder="e.g. Rajesh Sharma"/></div>
+    <div class="mfg"><label>Class</label><select id="sc"><option>NURSERY</option><option>LKG</option><option>HKG</option><option>First</option><option>Second</option><option>Third</option><option>Fourth</option><option>Fifth</option><option>Sixth</option><option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option></select></div>
+    <div class="mfg"><label>Parent name</label><input id="sp"/></div>
     <div class="mfg"><label>Parent phone (for WhatsApp)</label><input id="sph" placeholder="e.g. 9876543210"/></div>
-    <div class="mfg"><label>Student login password</label><input id="spw" placeholder="Default: student123"/></div>
+    <div class="mfg"><label>Password</label><input id="spw" placeholder="Default: school123"/></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeMod('stu')">Cancel</button>
       <button class="btn btn-purple" onclick="addStu()">Add student</button>
@@ -207,18 +201,18 @@ tr:hover td{background:#F5F3FF}
 </div>
 <div class="overlay" id="mod-cred">
   <div class="modal">
-    <div class="modal-title">Student added successfully ✅</div>
+    <div class="modal-title">Student added ✅</div>
     <div class="cred-box">
-      <div class="cred-title"><span class="cred-check">✓</span> Login credentials ready to share</div>
-      <div class="cred-row"><span class="cred-label">Student name</span><span class="cred-val" id="c-name">—</span></div>
+      <div class="cred-title"><span class="cred-check">✓</span> Share these login details</div>
+      <div class="cred-row"><span class="cred-label">Name</span><span class="cred-val" id="c-name">—</span></div>
       <div class="cred-row"><span class="cred-label">Class</span><span class="cred-val" id="c-cls">—</span></div>
-      <div class="cred-row"><span class="cred-label">Username (roll no)</span><span class="cred-val" id="c-roll">—</span></div>
+      <div class="cred-row"><span class="cred-label">Username</span><span class="cred-val" id="c-user">—</span></div>
       <div class="cred-row"><span class="cred-label">Password</span><span class="cred-val" id="c-pass">—</span></div>
       <div class="cred-row"><span class="cred-label">Parent phone</span><span class="cred-val" id="c-phone">—</span></div>
     </div>
     <div class="cred-actions">
       <button class="btn-green" onclick="shareWhatsApp()">Share on WhatsApp</button>
-      <button class="btn" onclick="copyCredentials()" id="copy-btn">Copy credentials</button>
+      <button class="btn" onclick="copyCredentials()" id="copy-btn">Copy</button>
       <button class="btn btn-purple" style="margin-left:auto" onclick="closeMod('cred')">Done</button>
     </div>
   </div>
@@ -238,11 +232,10 @@ tr:hover td{background:#F5F3FF}
 </div>
 </div>
 
-<!-- STUDENT -->
 <div class="screen" id="screen-student">
 <div class="app">
   <div class="sidebar">
-    <div class="app-name">🏫 School</div>
+    <div class="app-name">🏫 LFA School</div>
     <div class="user-pill" id="stu-name-side">Student</div>
     <div class="nav">
       <button class="nav-btn active" onclick="sGo('profile')"><span class="nav-dot"></span>My profile</button>
@@ -258,7 +251,7 @@ tr:hover td{background:#F5F3FF}
       <div class="info-grid">
         <div class="info-card"><div class="info-label">Name</div><div class="info-val" id="sp-name">—</div></div>
         <div class="info-card"><div class="info-label">Class</div><div class="info-val" id="sp-cls">—</div></div>
-        <div class="info-card"><div class="info-label">Roll number</div><div class="info-val" id="sp-roll">—</div></div>
+        <div class="info-card"><div class="info-label">Username</div><div class="info-val" id="sp-user">—</div></div>
         <div class="info-card"><div class="info-label">Parent</div><div class="info-val" id="sp-parent">—</div></div>
         <div class="info-card"><div class="info-label">Phone</div><div class="info-val" id="sp-phone">—</div></div>
         <div class="info-card"><div class="info-label">Attendance</div><div class="info-val" id="sp-att">—</div></div>
@@ -302,6 +295,7 @@ const db = getDatabase(app);
 
 let role='admin', currentStu=null, lastAdded=null;
 let students=[], fees=[], att={};
+
 const days=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 const ttData=[
   {t:"8:00 AM",s:["Math","Science","English","Math","Science"]},
@@ -316,8 +310,8 @@ const subText={"Math":"#1E40AF","Science":"#065F46","English":"#5B21B6","Hindi":
 
 function ini(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function pct(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
 
-// Real-time listeners
 onValue(ref(db,'students'),snap=>{
   students=[];
   snap.forEach(c=>students.push({fbKey:c.key,...c.val()}));
@@ -335,37 +329,47 @@ onValue(ref(db,'attendance'),snap=>{
 });
 
 function refreshActive(){
-  if(document.getElementById('a-pg-dashboard').classList.contains('active'))renderDash();
-  if(document.getElementById('a-pg-students').classList.contains('active'))renderStu();
-  if(document.getElementById('a-pg-fees').classList.contains('active'))renderFees();
-  if(document.getElementById('a-pg-attendance').classList.contains('active'))renderAtt();
+  const screen=document.querySelector('.screen.active');
+  if(!screen||screen.id==='screen-login')return;
+  if(screen.id==='screen-admin'){
+    if(document.getElementById('a-pg-dashboard').classList.contains('active'))renderDash();
+    if(document.getElementById('a-pg-students').classList.contains('active'))renderStu();
+    if(document.getElementById('a-pg-fees').classList.contains('active'))renderFees();
+    if(document.getElementById('a-pg-attendance').classList.contains('active'))renderAtt();
+  }
 }
 
-function pct(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
-
 window.setRole=r=>{role=r;document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));document.getElementById('l-err').textContent='';};
+
 window.doLogin=()=>{
-  const u=document.getElementById('l-user').value.trim().toLowerCase(),p=document.getElementById('l-pass').value.trim();
-  document.getElementById('l-err').textContent='';
+  const u=document.getElementById('l-user').value.trim().toLowerCase();
+  const p=document.getElementById('l-pass').value.trim();
+  const errEl=document.getElementById('l-err');
+  const btn=document.getElementById('login-btn');
+  errEl.textContent='';
+  if(!u||!p){errEl.textContent='Please enter username and password.';return;}
   if(role==='admin'){
     if(u==='admin'&&p==='admin123')showAdmin();
-    else document.getElementById('l-err').textContent='Incorrect username or password.';
+    else errEl.textContent='Incorrect username or password.';
   } else {
-    document.getElementById('l-err').textContent='Signing in...';
+    errEl.textContent='Signing in...';
+    btn.disabled=true;
     get(query(ref(db,'students'),orderByChild('username'),equalTo(u))).then(snap=>{
+      btn.disabled=false;
       if(snap.exists()){
         let found=null;
         snap.forEach(c=>{const st={fbKey:c.key,...c.val()};if(st.pass===p)found=st;});
-        if(found){document.getElementById('l-err').textContent='';showStudent(found);}
-        else document.getElementById('l-err').textContent='Incorrect password.';
+        if(found){errEl.textContent='';showStudent(found);}
+        else errEl.textContent='Incorrect password.';
       } else {
-        document.getElementById('l-err').textContent='Username not found.';
+        errEl.textContent='Username not found.';
       }
-    }).catch(()=>document.getElementById('l-err').textContent='Connection error. Try again.');
+    }).catch(()=>{btn.disabled=false;errEl.textContent='Connection error. Try again.';});
   }
 };
+
 function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function showAdmin(){showScr('screen-admin');setTimeout(()=>{renderDash();},300);}
+function showAdmin(){showScr('screen-admin');renderDash();}
 function showStudent(s){currentStu=s;showScr('screen-student');document.getElementById('stu-name-side').textContent=s.name;sGo('profile');}
 window.logout=()=>{document.getElementById('l-user').value='';document.getElementById('l-pass').value='';currentStu=null;showScr('screen-login');};
 
@@ -374,7 +378,7 @@ window.aGo=p=>{
   document.querySelectorAll('#screen-admin .nav-btn').forEach(x=>x.classList.remove('active'));
   document.getElementById('a-pg-'+p).classList.add('active');
   document.querySelectorAll('#screen-admin .nav-btn')[{dashboard:0,students:1,fees:2,timetable:3,attendance:4}[p]].classList.add('active');
-  setTimeout(()=>({dashboard:renderDash,students:renderStu,fees:renderFees,timetable:()=>renderTT('tt'),attendance:renderAtt})[p](),100);
+  ({dashboard:renderDash,students:renderStu,fees:renderFees,timetable:()=>renderTT('tt'),attendance:renderAtt})[p]();
 };
 window.sGo=p=>{
   document.querySelectorAll('#screen-student .page').forEach(x=>x.classList.remove('active'));
@@ -383,56 +387,59 @@ window.sGo=p=>{
   document.querySelectorAll('#screen-student .nav-btn')[{profile:0,fees:1,attendance:2,timetable:3}[p]].classList.add('active');
   ({profile:renderStuProfile,fees:renderStuFees,attendance:renderStuAtt,timetable:()=>renderTT('s-tt')})[p]();
 };
-window.openMod=id=>{if(id==='fee')document.getElementById('fs').innerHTML=students.map(s=>`<option value="${s.fbKey}">${s.name} (${s.cls})</option>`).join('');document.getElementById('mod-'+id).classList.add('open');};
+window.openMod=id=>{
+  if(id==='fee')document.getElementById('fs').innerHTML=students.map(s=>`<option value="${s.fbKey}">${s.name} (${s.cls})</option>`).join('');
+  document.getElementById('mod-'+id).classList.add('open');
+};
 window.closeMod=id=>document.getElementById('mod-'+id).classList.remove('open');
 
 window.addStu=()=>{
   const name=document.getElementById('sn').value.trim();if(!name)return;
-  const pw=document.getElementById('spw').value.trim()||'student123';
-  const roll=parseInt(document.getElementById('sr').value)||Math.floor(Math.random()*900)+100;
-  const s={name,cls:document.getElementById('sc').value,roll,parent:document.getElementById('sp').value||'—',phone:document.getElementById('sph').value||'—',pass:pw};
+  const pw=document.getElementById('spw').value.trim()||'school123';
+  const parts=name.toLowerCase().split(' ');
+  const username=parts.length>=2?parts[0]+'.'+parts[parts.length-1]:parts[0];
+  const s={name,cls:document.getElementById('sc').value,parent:document.getElementById('sp').value||'—',phone:document.getElementById('sph').value||'—',pass:pw,username:username.replace(/[^a-z.]/g,''),roll:0};
   const nr=push(ref(db,'students'));
   set(nr,s).then(()=>{
     set(ref(db,'attendance/'+nr.key),[0,0,0,0,0,0,0]);
     lastAdded={fbKey:nr.key,...s};
-    ['sn','sr','sp','sph','spw'].forEach(id=>document.getElementById(id).value='');
+    ['sn','sp','sph','spw'].forEach(id=>document.getElementById(id).value='');
     closeMod('stu');showCredPopup(lastAdded);
-    toast('✅ Student saved to database!');
+    toast('✅ Student saved!');
   });
 };
-
 function showCredPopup(s){
   document.getElementById('c-name').textContent=s.name;
   document.getElementById('c-cls').textContent=s.cls;
-  document.getElementById('c-roll').textContent=s.roll;
+  document.getElementById('c-user').textContent=s.username;
   document.getElementById('c-pass').textContent=s.pass;
   document.getElementById('c-phone').textContent=s.phone;
-  document.getElementById('copy-btn').textContent='Copy credentials';
+  document.getElementById('copy-btn').textContent='Copy';
   openMod('cred');
 }
 window.shareWhatsApp=()=>{
   if(!lastAdded)return;
   const s=lastAdded;
-  const msg=`*School App Login Details*\n\nDear Parent of ${s.name},\n\n*Student:* ${s.name}\n*Class:* ${s.cls}\n*Username (Roll No):* ${s.roll}\n*Password:* ${s.pass}\n\nUse these to log in and track attendance, fees and timetable.\n\n_Sent by School Admin_`;
+  const msg=`*LFA School App Login*\n\nDear Parent of ${s.name},\n\n*Username:* ${s.username}\n*Password:* ${s.pass}\n\nLogin at: https://tabishakhter.github.io/LFA/\n\n_School Admin_`;
   window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
 };
 window.shareWhatsAppDirect=fbKey=>{const s=students.find(st=>st.fbKey===fbKey);if(s){lastAdded=s;shareWhatsApp();}};
 window.copyCredentials=()=>{
   if(!lastAdded)return;
   const s=lastAdded;
-  navigator.clipboard.writeText(`School App Login\nStudent: ${s.name}\nClass: ${s.cls}\nUsername: ${s.roll}\nPassword: ${s.pass}`).then(()=>{document.getElementById('copy-btn').textContent='Copied!';setTimeout(()=>document.getElementById('copy-btn').textContent='Copy credentials',2000);});
+  navigator.clipboard.writeText(`LFA School Login\nUsername: ${s.username}\nPassword: ${s.pass}`).then(()=>{document.getElementById('copy-btn').textContent='Copied!';setTimeout(()=>document.getElementById('copy-btn').textContent='Copy',2000);});
 };
 window.rmStu=fbKey=>{
   if(!confirm('Remove this student?'))return;
   remove(ref(db,'students/'+fbKey));
   remove(ref(db,'attendance/'+fbKey));
-  toast('Student removed.');
+  toast('Removed.');
 };
 window.addFee=()=>{
   const fbKey=document.getElementById('fs').value;
   const s=students.find(st=>st.fbKey===fbKey);
   push(ref(db,'fees'),{sid:fbKey,sName:s?s.name:'',sCls:s?s.cls:'',amount:parseInt(document.getElementById('fa').value)||0,month:document.getElementById('fm').value,status:document.getElementById('fst').value}).then(()=>{
-    document.getElementById('fa').value='';closeMod('fee');toast('✅ Fee saved to database!');
+    document.getElementById('fa').value='';closeMod('fee');toast('✅ Fee saved!');
   });
 };
 window.toggleAtt=(fbKey,idx)=>{
@@ -449,7 +456,7 @@ function renderDash(){
   document.getElementById('d-col').textContent='₹'+paid.toLocaleString('en-IN');
   document.getElementById('d-pen').textContent='₹'+pend.toLocaleString('en-IN');
   document.getElementById('d-att').textContent=avg+'%';
-  document.getElementById('d-table').innerHTML=students.length?students.map(s=>{
+  document.getElementById('d-table').innerHTML=students.length?students.slice(0,50).map(s=>{
     const sf=fees.filter(f=>f.sid===s.fbKey);
     const fs=sf.length?(sf.every(f=>f.status==='Paid')?'Paid':'Pending'):'No record';
     const ap=pct(s.fbKey);
@@ -457,9 +464,11 @@ function renderDash(){
   }).join(''):`<tr><td colspan="4" class="loading">No students yet.</td></tr>`;
 }
 function renderStu(){
-  document.getElementById('s-table').innerHTML=students.length?students.map(s=>
-    `<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td>${s.roll}</td><td>${s.parent}</td><td>${s.phone}</td><td style="color:#9CA3AF;font-size:12px;font-family:monospace">${s.pass}</td><td><button class="btn-green" onclick="shareWhatsAppDirect('${s.fbKey}')">WhatsApp</button></td><td><button class="btn-sm" onclick="rmStu('${s.fbKey}')">✕</button></td></tr>`
-  ).join(''):`<tr><td colspan="8" class="loading">No students yet.</td></tr>`;
+  const q=(document.getElementById('search-stu')||{value:''}).value.toLowerCase();
+  const filtered=students.filter(s=>s.name.toLowerCase().includes(q)||s.cls.toLowerCase().includes(q));
+  document.getElementById('s-table').innerHTML=filtered.length?filtered.map(s=>
+    `<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td style="font-family:monospace;font-size:12px">${s.username||'—'}</td><td>${s.parent||'—'}</td><td style="color:#9CA3AF;font-size:12px;font-family:monospace">${s.pass}</td><td><button class="btn-green" onclick="shareWhatsAppDirect('${s.fbKey}')">WA</button></td><td><button class="btn-sm" onclick="rmStu('${s.fbKey}')">✕</button></td></tr>`
+  ).join(''):`<tr><td colspan="7" class="loading">${students.length?'No results.':'No students yet.'}</td></tr>`;
 }
 function renderFees(){
   document.getElementById('f-table').innerHTML=fees.length?fees.map(f=>
@@ -475,15 +484,21 @@ function renderTT(cid){
   });
 }
 function renderAtt(){
-  document.getElementById('att-list').innerHTML=students.length?students.map(s=>{
+  const q=(document.getElementById('search-att')||{value:''}).value.toLowerCase();
+  const filtered=students.filter(s=>s.name.toLowerCase().includes(q));
+  document.getElementById('att-list').innerHTML=filtered.length?filtered.map(s=>{
     const a=att[s.fbKey]||[0,0,0,0,0,0,0];
     const p=pct(s.fbKey);
-    return`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls} · Roll ${s.roll}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}% present</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
-  }).join(''):`<div class="loading">No students yet.</div>`;
+    return`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}% present</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
+  }).join(''):`<div class="loading">${students.length?'No results.':'No students yet.'}</div>`;
 }
 function renderStuProfile(){
   const s=currentStu;if(!s)return;
-  ['name','cls','roll','parent','phone'].forEach(k=>document.getElementById('sp-'+k).textContent=s[k]);
+  document.getElementById('sp-name').textContent=s.name;
+  document.getElementById('sp-cls').textContent=s.cls;
+  document.getElementById('sp-user').textContent=s.username||'—';
+  document.getElementById('sp-parent').textContent=s.parent||'—';
+  document.getElementById('sp-phone').textContent=s.phone||'—';
   const p=pct(s.fbKey);
   document.getElementById('sp-att').innerHTML=`<span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span>`;
 }
