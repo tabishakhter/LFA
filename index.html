@@ -22,16 +22,17 @@ body{font-family:system-ui,-apple-system,sans-serif}
 .fg label{display:block;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:5px;font-weight:500}
 .fg input{width:100%;padding:11px 13px;border:1px solid rgba(255,255,255,0.2);border-radius:10px;font-size:14px;background:rgba(255,255,255,0.1);color:#fff;outline:none}
 .fg input::placeholder{color:rgba(255,255,255,0.3)}
-.fg input:focus{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15)}
-.btn-full{width:100%;padding:12px;border-radius:10px;border:none;background:#fff;color:#2D1B69;font-size:14px;font-weight:600;cursor:pointer;margin-top:0.25rem;transition:opacity 0.15s}
+.fg input:focus{border-color:rgba(255,255,255,0.5)}
+.btn-full{width:100%;padding:12px;border-radius:10px;border:none;background:#fff;color:#2D1B69;font-size:14px;font-weight:600;cursor:pointer;margin-top:0.25rem}
 .btn-full:hover{opacity:0.9}
+.btn-full:disabled{opacity:0.6;cursor:not-allowed}
 .err{font-size:12px;color:#FCA5A5;margin-top:8px;min-height:18px}
 .app{display:flex;min-height:100vh}
 .sidebar{width:200px;background:#2D1B69;padding:1.5rem 0;flex-shrink:0;display:flex;flex-direction:column}
 .app-name{font-size:16px;font-weight:600;color:#fff;padding:0 1.25rem 0.25rem}
 .user-pill{font-size:11px;color:#C4B5FD;padding:0 1.25rem 1.5rem}
 .nav{display:flex;flex-direction:column;gap:2px}
-.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;font-size:13px;color:#C4B5FD;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background 0.1s,color 0.1s}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 1.25rem;font-size:13px;color:#C4B5FD;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background 0.1s}
 .nav-btn:hover{background:rgba(255,255,255,0.1);color:#fff}
 .nav-btn.active{background:rgba(255,255,255,0.15);color:#fff;font-weight:600}
 .nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.25);flex-shrink:0}
@@ -42,12 +43,11 @@ body{font-family:system-ui,-apple-system,sans-serif}
 .page{display:none}.page.active{display:block}
 .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
 .ptitle{font-size:20px;font-weight:600;color:#2D1B69}
-.btn{padding:8px 16px;border-radius:8px;border:1px solid #D1D5DB;background:#fff;cursor:pointer;font-size:13px;color:#374151;transition:background 0.1s}
+.btn{padding:8px 16px;border-radius:8px;border:1px solid #D1D5DB;background:#fff;cursor:pointer;font-size:13px;color:#374151}
 .btn:hover{background:#F9FAFB}
 .btn-purple{background:#2D1B69;color:#fff;border-color:#2D1B69}
 .btn-purple:hover{background:#3B1F8C}
 .btn-green{background:#25D366;color:#fff;border:none;font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer}
-.btn-green:hover{background:#1ebe5a}
 .btn-sm{padding:4px 10px;font-size:12px;border:1px solid #FCA5A5;color:#DC2626;background:#FEF2F2;border-radius:6px;cursor:pointer}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
 .stat{border-radius:12px;padding:1rem;color:#fff}
@@ -97,13 +97,15 @@ tr:hover td{background:#F5F3FF}
 .info-label{font-size:11px;color:#6B7280;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:500}
 .info-val{font-size:15px;font-weight:600;color:#2D1B69}
 .tt-grid{display:grid;grid-template-columns:80px repeat(5,1fr);gap:6px}
-.tt-head{font-size:11px;font-weight:600;color:#6B7280;padding:6px 8px;text-align:center;text-transform:uppercase;letter-spacing:0.04em}
+.tt-head{font-size:11px;font-weight:600;color:#6B7280;padding:6px 8px;text-align:center;text-transform:uppercase}
 .tt-time{font-size:11px;color:#9CA3AF;padding:6px 4px;text-align:right;padding-top:14px}
 .tt-cell{background:#fff;border:1px solid #E5E7EB;border-radius:8px;padding:8px;min-height:58px}
 .tt-subj{font-size:12px;font-weight:600;color:#2D1B69;margin-bottom:2px}
 .tt-teacher{font-size:11px;color:#6B7280}
 .avatar{width:34px;height:34px;border-radius:50%;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#5B21B6;flex-shrink:0}
 .loading{text-align:center;padding:2rem;color:#9CA3AF;font-size:14px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid #C4B5FD;border-top-color:#2D1B69;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:24px;right:24px;background:#2D1B69;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;display:none}
 .toast.show{display:block}
 .search-box{width:100%;padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;margin-bottom:1rem;outline:none}
@@ -113,6 +115,7 @@ tr:hover td{background:#F5F3FF}
 <body>
 <div class="toast" id="toast"></div>
 
+<!-- LOGIN -->
 <div class="screen active" id="screen-login">
 <div class="login-wrap">
   <div class="bg-c1"></div><div class="bg-c2"></div><div class="bg-c3"></div>
@@ -131,6 +134,7 @@ tr:hover td{background:#F5F3FF}
 </div>
 </div>
 
+<!-- ADMIN -->
 <div class="screen" id="screen-admin">
 <div class="app">
   <div class="sidebar">
@@ -156,22 +160,22 @@ tr:hover td{background:#F5F3FF}
       </div>
       <div class="card"><table>
         <thead><tr><th style="width:30%">Name</th><th style="width:20%">Class</th><th style="width:25%">Fee status</th><th style="width:25%">Attendance</th></tr></thead>
-        <tbody id="d-table"><tr><td colspan="4" class="loading">Loading students...</td></tr></tbody>
+        <tbody id="d-table"><tr><td colspan="4" class="loading"><span class="spinner"></span>Loading students...</td></tr></tbody>
       </table></div>
     </div>
     <div class="page" id="a-pg-students">
       <div class="ph"><div class="ptitle">Students</div><button class="btn btn-purple" onclick="openMod('stu')">+ Add student</button></div>
       <input class="search-box" id="search-stu" placeholder="Search by name or class..." oninput="renderStu()"/>
       <div class="card"><table>
-        <thead><tr><th style="width:22%">Name</th><th style="width:12%">Class</th><th style="width:14%">Username</th><th style="width:18%">Parent</th><th style="width:14%">Password</th><th style="width:10%">Share</th><th style="width:10%"></th></tr></thead>
-        <tbody id="s-table"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
+        <thead><tr><th style="width:22%">Name</th><th style="width:12%">Class</th><th style="width:16%">Username</th><th style="width:18%">Parent</th><th style="width:12%">Password</th><th style="width:10%">Share</th><th style="width:10%"></th></tr></thead>
+        <tbody id="s-table"><tr><td colspan="7" class="loading"><span class="spinner"></span>Loading...</td></tr></tbody>
       </table></div>
     </div>
     <div class="page" id="a-pg-fees">
       <div class="ph"><div class="ptitle">Fees</div><button class="btn btn-purple" onclick="openMod('fee')">+ Record payment</button></div>
       <div class="card"><table>
         <thead><tr><th style="width:28%">Student</th><th style="width:18%">Class</th><th style="width:18%">Amount</th><th style="width:18%">Month</th><th style="width:18%">Status</th></tr></thead>
-        <tbody id="f-table"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+        <tbody id="f-table"><tr><td colspan="5" class="loading"><span class="spinner"></span>Loading...</td></tr></tbody>
       </table></div>
     </div>
     <div class="page" id="a-pg-timetable">
@@ -181,7 +185,7 @@ tr:hover td{background:#F5F3FF}
     <div class="page" id="a-pg-attendance">
       <div class="ph"><div class="ptitle">Attendance</div><span style="font-size:12px;color:#9CA3AF">Tap circles to mark present / absent</span></div>
       <input class="search-box" id="search-att" placeholder="Search student..." oninput="renderAtt()"/>
-      <div id="att-list"><div class="loading">Loading...</div></div>
+      <div id="att-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
     </div>
   </div>
 </div>
@@ -203,7 +207,7 @@ tr:hover td{background:#F5F3FF}
   <div class="modal">
     <div class="modal-title">Student added ✅</div>
     <div class="cred-box">
-      <div class="cred-title"><span class="cred-check">✓</span> Share these login details</div>
+      <div class="cred-title"><span class="cred-check">✓</span>Share these login details</div>
       <div class="cred-row"><span class="cred-label">Name</span><span class="cred-val" id="c-name">—</span></div>
       <div class="cred-row"><span class="cred-label">Class</span><span class="cred-val" id="c-cls">—</span></div>
       <div class="cred-row"><span class="cred-label">Username</span><span class="cred-val" id="c-user">—</span></div>
@@ -232,6 +236,7 @@ tr:hover td{background:#F5F3FF}
 </div>
 </div>
 
+<!-- STUDENT -->
 <div class="screen" id="screen-student">
 <div class="app">
   <div class="sidebar">
@@ -308,30 +313,34 @@ const teachers=["Mr. Arora","Mrs. Joshi","Mr. Verma","Mrs. Nair","Mr. Kapoor"];
 const subColors={"Math":"#DBEAFE","Science":"#D1FAE5","English":"#EDE9FE","Hindi":"#FEF3C7","Art":"#FCE7F3"};
 const subText={"Math":"#1E40AF","Science":"#065F46","English":"#5B21B6","Hindi":"#92400E","Art":"#9D174D"};
 
-function ini(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function ini(n){return n?n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??';}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function pct(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
 
-onValue(ref(db,'students'),snap=>{
+// Start Firebase listeners immediately on page load
+onValue(ref(db,'students'), snap=>{
   students=[];
   snap.forEach(c=>students.push({fbKey:c.key,...c.val()}));
-  refreshActive();
-});
-onValue(ref(db,'fees'),snap=>{
-  fees=[];
-  snap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
-  refreshActive();
-});
-onValue(ref(db,'attendance'),snap=>{
-  att={};
-  snap.forEach(c=>{att[c.key]=c.val();});
-  refreshActive();
+  console.log('Students loaded:', students.length);
+  renderAllActive();
 });
 
-function refreshActive(){
-  const screen=document.querySelector('.screen.active');
-  if(!screen||screen.id==='screen-login')return;
-  if(screen.id==='screen-admin'){
+onValue(ref(db,'fees'), snap=>{
+  fees=[];
+  snap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
+  renderAllActive();
+});
+
+onValue(ref(db,'attendance'), snap=>{
+  att={};
+  snap.forEach(c=>{att[c.key]=c.val();});
+  renderAllActive();
+});
+
+function renderAllActive(){
+  const s=document.querySelector('.screen.active');
+  if(!s||s.id==='screen-login')return;
+  if(s.id==='screen-admin'){
     if(document.getElementById('a-pg-dashboard').classList.contains('active'))renderDash();
     if(document.getElementById('a-pg-students').classList.contains('active'))renderStu();
     if(document.getElementById('a-pg-fees').classList.contains('active'))renderFees();
@@ -339,39 +348,61 @@ function refreshActive(){
   }
 }
 
-window.setRole=r=>{role=r;document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));document.getElementById('l-err').textContent='';};
+window.setRole=r=>{
+  role=r;
+  document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));
+  document.getElementById('l-err').textContent='';
+};
 
 window.doLogin=()=>{
   const u=document.getElementById('l-user').value.trim().toLowerCase();
   const p=document.getElementById('l-pass').value.trim();
-  const errEl=document.getElementById('l-err');
+  const err=document.getElementById('l-err');
   const btn=document.getElementById('login-btn');
-  errEl.textContent='';
-  if(!u||!p){errEl.textContent='Please enter username and password.';return;}
+  err.textContent='';
+  if(!u||!p){err.textContent='Please enter username and password.';return;}
   if(role==='admin'){
-    if(u==='admin'&&p==='admin123')showAdmin();
-    else errEl.textContent='Incorrect username or password.';
+    if(u==='admin'&&p==='admin123'){showAdmin();}
+    else err.textContent='Incorrect username or password.';
   } else {
-    errEl.textContent='Signing in...';
+    err.textContent='Signing in...';
     btn.disabled=true;
     get(query(ref(db,'students'),orderByChild('username'),equalTo(u))).then(snap=>{
       btn.disabled=false;
       if(snap.exists()){
         let found=null;
         snap.forEach(c=>{const st={fbKey:c.key,...c.val()};if(st.pass===p)found=st;});
-        if(found){errEl.textContent='';showStudent(found);}
-        else errEl.textContent='Incorrect password.';
+        if(found){err.textContent='';showStudent(found);}
+        else err.textContent='Incorrect password.';
       } else {
-        errEl.textContent='Username not found.';
+        err.textContent='Username not found.';
       }
-    }).catch(()=>{btn.disabled=false;errEl.textContent='Connection error. Try again.';});
+    }).catch(()=>{btn.disabled=false;err.textContent='Connection error. Try again.';});
   }
 };
 
 function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function showAdmin(){showScr('screen-admin');renderDash();}
-function showStudent(s){currentStu=s;showScr('screen-student');document.getElementById('stu-name-side').textContent=s.name;sGo('profile');}
-window.logout=()=>{document.getElementById('l-user').value='';document.getElementById('l-pass').value='';currentStu=null;showScr('screen-login');};
+
+function showAdmin(){
+  showScr('screen-admin');
+  // Render immediately with whatever data we have
+  renderDash();
+  renderStu();
+}
+
+function showStudent(s){
+  currentStu=s;
+  showScr('screen-student');
+  document.getElementById('stu-name-side').textContent=s.name;
+  sGo('profile');
+}
+
+window.logout=()=>{
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  currentStu=null;
+  showScr('screen-login');
+};
 
 window.aGo=p=>{
   document.querySelectorAll('#screen-admin .page').forEach(x=>x.classList.remove('active'));
@@ -380,6 +411,7 @@ window.aGo=p=>{
   document.querySelectorAll('#screen-admin .nav-btn')[{dashboard:0,students:1,fees:2,timetable:3,attendance:4}[p]].classList.add('active');
   ({dashboard:renderDash,students:renderStu,fees:renderFees,timetable:()=>renderTT('tt'),attendance:renderAtt})[p]();
 };
+
 window.sGo=p=>{
   document.querySelectorAll('#screen-student .page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('#screen-student .nav-btn').forEach(x=>x.classList.remove('active'));
@@ -387,6 +419,7 @@ window.sGo=p=>{
   document.querySelectorAll('#screen-student .nav-btn')[{profile:0,fees:1,attendance:2,timetable:3}[p]].classList.add('active');
   ({profile:renderStuProfile,fees:renderStuFees,attendance:renderStuAtt,timetable:()=>renderTT('s-tt')})[p]();
 };
+
 window.openMod=id=>{
   if(id==='fee')document.getElementById('fs').innerHTML=students.map(s=>`<option value="${s.fbKey}">${s.name} (${s.cls})</option>`).join('');
   document.getElementById('mod-'+id).classList.add('open');
@@ -394,20 +427,23 @@ window.openMod=id=>{
 window.closeMod=id=>document.getElementById('mod-'+id).classList.remove('open');
 
 window.addStu=()=>{
-  const name=document.getElementById('sn').value.trim();if(!name)return;
+  const name=document.getElementById('sn').value.trim();
+  if(!name)return;
   const pw=document.getElementById('spw').value.trim()||'school123';
   const parts=name.toLowerCase().split(' ');
-  const username=parts.length>=2?parts[0]+'.'+parts[parts.length-1]:parts[0];
-  const s={name,cls:document.getElementById('sc').value,parent:document.getElementById('sp').value||'—',phone:document.getElementById('sph').value||'—',pass:pw,username:username.replace(/[^a-z.]/g,''),roll:0};
+  const username=(parts.length>=2?parts[0]+'.'+parts[parts.length-1]:parts[0]).replace(/[^a-z.]/g,'');
+  const s={name,cls:document.getElementById('sc').value,parent:document.getElementById('sp').value||'—',phone:document.getElementById('sph').value||'—',pass:pw,username,roll:0};
   const nr=push(ref(db,'students'));
   set(nr,s).then(()=>{
     set(ref(db,'attendance/'+nr.key),[0,0,0,0,0,0,0]);
     lastAdded={fbKey:nr.key,...s};
     ['sn','sp','sph','spw'].forEach(id=>document.getElementById(id).value='');
-    closeMod('stu');showCredPopup(lastAdded);
+    closeMod('stu');
+    showCredPopup(lastAdded);
     toast('✅ Student saved!');
   });
 };
+
 function showCredPopup(s){
   document.getElementById('c-name').textContent=s.name;
   document.getElementById('c-cls').textContent=s.cls;
@@ -417,31 +453,51 @@ function showCredPopup(s){
   document.getElementById('copy-btn').textContent='Copy';
   openMod('cred');
 }
+
 window.shareWhatsApp=()=>{
   if(!lastAdded)return;
   const s=lastAdded;
-  const msg=`*LFA School App Login*\n\nDear Parent of ${s.name},\n\n*Username:* ${s.username}\n*Password:* ${s.pass}\n\nLogin at: https://tabishakhter.github.io/LFA/\n\n_School Admin_`;
+  const msg=`*LFA School Login*\n\nDear Parent of ${s.name},\n\n*Username:* ${s.username}\n*Password:* ${s.pass}\n\nLogin: https://tabishakhter.github.io/LFA/\n\n_School Admin_`;
   window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
 };
-window.shareWhatsAppDirect=fbKey=>{const s=students.find(st=>st.fbKey===fbKey);if(s){lastAdded=s;shareWhatsApp();}};
+
+window.shareWhatsAppDirect=fbKey=>{
+  const s=students.find(st=>st.fbKey===fbKey);
+  if(s){lastAdded=s;shareWhatsApp();}
+};
+
 window.copyCredentials=()=>{
   if(!lastAdded)return;
-  const s=lastAdded;
-  navigator.clipboard.writeText(`LFA School Login\nUsername: ${s.username}\nPassword: ${s.pass}`).then(()=>{document.getElementById('copy-btn').textContent='Copied!';setTimeout(()=>document.getElementById('copy-btn').textContent='Copy',2000);});
+  navigator.clipboard.writeText(`LFA School Login\nUsername: ${lastAdded.username}\nPassword: ${lastAdded.pass}`).then(()=>{
+    document.getElementById('copy-btn').textContent='Copied!';
+    setTimeout(()=>document.getElementById('copy-btn').textContent='Copy',2000);
+  });
 };
+
 window.rmStu=fbKey=>{
   if(!confirm('Remove this student?'))return;
   remove(ref(db,'students/'+fbKey));
   remove(ref(db,'attendance/'+fbKey));
   toast('Removed.');
 };
+
 window.addFee=()=>{
   const fbKey=document.getElementById('fs').value;
   const s=students.find(st=>st.fbKey===fbKey);
-  push(ref(db,'fees'),{sid:fbKey,sName:s?s.name:'',sCls:s?s.cls:'',amount:parseInt(document.getElementById('fa').value)||0,month:document.getElementById('fm').value,status:document.getElementById('fst').value}).then(()=>{
-    document.getElementById('fa').value='';closeMod('fee');toast('✅ Fee saved!');
+  push(ref(db,'fees'),{
+    sid:fbKey,
+    sName:s?s.name:'',
+    sCls:s?s.cls:'',
+    amount:parseInt(document.getElementById('fa').value)||0,
+    month:document.getElementById('fm').value,
+    status:document.getElementById('fst').value
+  }).then(()=>{
+    document.getElementById('fa').value='';
+    closeMod('fee');
+    toast('✅ Fee saved!');
   });
 };
+
 window.toggleAtt=(fbKey,idx)=>{
   const a=att[fbKey]?[...att[fbKey]]:[0,0,0,0,0,0,0];
   a[idx]=a[idx]?0:1;
@@ -456,25 +512,38 @@ function renderDash(){
   document.getElementById('d-col').textContent='₹'+paid.toLocaleString('en-IN');
   document.getElementById('d-pen').textContent='₹'+pend.toLocaleString('en-IN');
   document.getElementById('d-att').textContent=avg+'%';
-  document.getElementById('d-table').innerHTML=students.length?students.slice(0,50).map(s=>{
-    const sf=fees.filter(f=>f.sid===s.fbKey);
-    const fs=sf.length?(sf.every(f=>f.status==='Paid')?'Paid':'Pending'):'No record';
-    const ap=pct(s.fbKey);
-    return`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td><span class="pill ${fs==='Paid'?'pill-ok':fs==='Pending'?'pill-warn':'pill-mute'}">${fs}</span></td><td><span class="pill ${ap>=75?'pill-ok':ap>=50?'pill-warn':'pill-bad'}">${ap}%</span></td></tr>`;
-  }).join(''):`<tr><td colspan="4" class="loading">No students yet.</td></tr>`;
+  document.getElementById('d-table').innerHTML=students.length
+    ? students.slice(0,50).map(s=>{
+        const sf=fees.filter(f=>f.sid===s.fbKey);
+        const fs=sf.length?(sf.every(f=>f.status==='Paid')?'Paid':'Pending'):'No record';
+        const ap=pct(s.fbKey);
+        return`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td><span class="pill ${fs==='Paid'?'pill-ok':fs==='Pending'?'pill-warn':'pill-mute'}">${fs}</span></td><td><span class="pill ${ap>=75?'pill-ok':ap>=50?'pill-warn':'pill-bad'}">${ap}%</span></td></tr>`;
+      }).join('')
+    : `<tr><td colspan="4" class="loading"><span class="spinner"></span>Loading students from Firebase...</td></tr>`;
 }
+
 function renderStu(){
   const q=(document.getElementById('search-stu')||{value:''}).value.toLowerCase();
-  const filtered=students.filter(s=>s.name.toLowerCase().includes(q)||s.cls.toLowerCase().includes(q));
-  document.getElementById('s-table').innerHTML=filtered.length?filtered.map(s=>
-    `<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td style="font-family:monospace;font-size:12px">${s.username||'—'}</td><td>${s.parent||'—'}</td><td style="color:#9CA3AF;font-size:12px;font-family:monospace">${s.pass}</td><td><button class="btn-green" onclick="shareWhatsAppDirect('${s.fbKey}')">WA</button></td><td><button class="btn-sm" onclick="rmStu('${s.fbKey}')">✕</button></td></tr>`
-  ).join(''):`<tr><td colspan="7" class="loading">${students.length?'No results.':'No students yet.'}</td></tr>`;
+  const filtered=q?students.filter(s=>(s.name||'').toLowerCase().includes(q)||(s.cls||'').toLowerCase().includes(q)):students;
+  document.getElementById('s-table').innerHTML=filtered.length
+    ? filtered.map(s=>`<tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td>
+        <td>${s.cls||'—'}</td>
+        <td style="font-family:monospace;font-size:12px">${s.username||'—'}</td>
+        <td>${s.parent||'—'}</td>
+        <td style="color:#9CA3AF;font-size:12px;font-family:monospace">${s.pass||'—'}</td>
+        <td><button class="btn-green" onclick="shareWhatsAppDirect('${s.fbKey}')">WA</button></td>
+        <td><button class="btn-sm" onclick="rmStu('${s.fbKey}')">✕</button></td>
+      </tr>`).join('')
+    : `<tr><td colspan="7" class="loading">${students.length?'No results.':'<span class="spinner"></span>Loading...'}</td></tr>`;
 }
+
 function renderFees(){
-  document.getElementById('f-table').innerHTML=fees.length?fees.map(f=>
-    `<tr><td>${f.sName||'—'}</td><td>${f.sCls||'—'}</td><td style="font-weight:600">₹${f.amount.toLocaleString('en-IN')}</td><td>${f.month}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`
-  ).join(''):`<tr><td colspan="5" class="loading">No fee records yet.</td></tr>`;
+  document.getElementById('f-table').innerHTML=fees.length
+    ? fees.map(f=>`<tr><td>${f.sName||'—'}</td><td>${f.sCls||'—'}</td><td style="font-weight:600">₹${(f.amount||0).toLocaleString('en-IN')}</td><td>${f.month}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join('')
+    : `<tr><td colspan="5" class="loading">No fee records yet.</td></tr>`;
 }
+
 function renderTT(cid){
   const tt=document.getElementById(cid);
   tt.innerHTML='<div></div>'+['Mon','Tue','Wed','Thu','Fri'].map(d=>`<div class="tt-head">${d}</div>`).join('');
@@ -483,30 +552,38 @@ function renderTT(cid){
     row.s.forEach((sub,ci)=>tt.innerHTML+=`<div class="tt-cell" style="background:${subColors[sub]||'#F3F4F6'}"><div class="tt-subj" style="color:${subText[sub]||'#374151'}">${sub}</div><div class="tt-teacher">${teachers[ci]}</div></div>`);
   });
 }
+
 function renderAtt(){
   const q=(document.getElementById('search-att')||{value:''}).value.toLowerCase();
-  const filtered=students.filter(s=>s.name.toLowerCase().includes(q));
-  document.getElementById('att-list').innerHTML=filtered.length?filtered.map(s=>{
-    const a=att[s.fbKey]||[0,0,0,0,0,0,0];
-    const p=pct(s.fbKey);
-    return`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}% present</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
-  }).join(''):`<div class="loading">${students.length?'No results.':'No students yet.'}</div>`;
+  const filtered=q?students.filter(s=>(s.name||'').toLowerCase().includes(q)):students;
+  document.getElementById('att-list').innerHTML=filtered.length
+    ? filtered.map(s=>{
+        const a=att[s.fbKey]||[0,0,0,0,0,0,0];
+        const p=pct(s.fbKey);
+        return`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}% present</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
+      }).join('')
+    : `<div class="loading">${students.length?'No results.':'<span class="spinner"></span>Loading...'}</div>`;
 }
+
 function renderStuProfile(){
   const s=currentStu;if(!s)return;
-  document.getElementById('sp-name').textContent=s.name;
-  document.getElementById('sp-cls').textContent=s.cls;
+  document.getElementById('sp-name').textContent=s.name||'—';
+  document.getElementById('sp-cls').textContent=s.cls||'—';
   document.getElementById('sp-user').textContent=s.username||'—';
   document.getElementById('sp-parent').textContent=s.parent||'—';
   document.getElementById('sp-phone').textContent=s.phone||'—';
   const p=pct(s.fbKey);
   document.getElementById('sp-att').innerHTML=`<span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span>`;
 }
+
 function renderStuFees(){
   const s=currentStu;if(!s)return;
   const sf=fees.filter(f=>f.sid===s.fbKey);
-  document.getElementById('sf-table').innerHTML=sf.length?sf.map(f=>`<tr><td>${f.month}</td><td style="font-weight:600">₹${f.amount.toLocaleString('en-IN')}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join(''):`<tr><td colspan="3" class="loading">No records found</td></tr>`;
+  document.getElementById('sf-table').innerHTML=sf.length
+    ? sf.map(f=>`<tr><td>${f.month}</td><td style="font-weight:600">₹${(f.amount||0).toLocaleString('en-IN')}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join('')
+    : `<tr><td colspan="3" class="loading">No records found</td></tr>`;
 }
+
 function renderStuAtt(){
   const s=currentStu;if(!s)return;
   const a=att[s.fbKey]||[0,0,0,0,0,0,0];
