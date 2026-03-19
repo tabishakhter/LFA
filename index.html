@@ -159,15 +159,17 @@ tr:hover td{background:#F5F3FF}
     </div>
     <div class="page" id="a-pg-students">
       <div class="ph"><div class="ptitle">Students</div><button class="btn btn-purple" onclick="openMod('stu')">+ Add student</button></div>
-      <div style="display:flex;gap:10px;margin-bottom:1rem">
-        <select id="filter-cls" onchange="renderStu()" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 160px">
+      <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+        <select id="filter-cls" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 160px">
           <option value="">All classes</option>
           <option>NURSERY</option><option>LKG</option><option>HKG</option>
           <option>First</option><option>Second</option><option>Third</option>
           <option>Fourth</option><option>Fifth</option><option>Sixth</option>
           <option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option>
         </select>
-        <input class="search-box" id="search-stu" placeholder="Search by name..." oninput="renderStu()" style="margin-bottom:0;flex:1"/>
+        <input id="search-stu" placeholder="Search by name..." style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;flex:1;min-width:150px;outline:none"/>
+        <button onclick="renderStu()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
+        <button onclick="clearStuFilter()" style="padding:9px 14px;background:#fff;color:#374151;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Clear</button>
       </div>
       <div class="card"><table>
         <thead><tr><th style="width:22%">Name</th><th style="width:12%">Class</th><th style="width:16%">Username</th><th style="width:18%">Parent</th><th style="width:12%">Password</th><th style="width:10%">Share</th><th style="width:10%"></th></tr></thead>
@@ -176,18 +178,20 @@ tr:hover td{background:#F5F3FF}
     </div>
     <div class="page" id="a-pg-fees">
       <div class="ph"><div class="ptitle">Fees</div><button class="btn btn-purple" onclick="openMod('fee')">+ Record payment</button></div>
-      <div style="display:flex;gap:10px;margin-bottom:1rem">
-        <select id="filter-fee-cls" onchange="renderFees()" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 160px">
+      <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+        <select id="filter-fee-cls" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 160px">
           <option value="">All classes</option>
           <option>NURSERY</option><option>LKG</option><option>HKG</option>
           <option>First</option><option>Second</option><option>Third</option>
           <option>Fourth</option><option>Fifth</option><option>Sixth</option>
           <option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option>
         </select>
-        <select id="filter-fee-status" onchange="renderFees()" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 130px">
+        <select id="filter-fee-status" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;flex:0 0 130px">
           <option value="">All status</option>
           <option>Paid</option><option>Pending</option>
         </select>
+        <button onclick="renderFees()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
+        <button onclick="clearFeeFilter()" style="padding:9px 14px;background:#fff;color:#374151;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Clear</button>
       </div>
       <div id="fee-summary"></div>
       <div class="card"><table>
@@ -481,6 +485,16 @@ window.toggleAtt=(fbKey,idx)=>{
   update(ref(db,'attendance'),{[fbKey]:a}).then(()=>{renderAtt();toast('Updated!');});
 };
 
+function clearStuFilter(){
+  const c=el('filter-cls');const s=el('search-stu');
+  if(c)c.value='';if(s)s.value='';
+  renderStu();
+}
+function clearFeeFilter(){
+  const c=el('filter-fee-cls');const s=el('filter-fee-status');
+  if(c)c.value='';if(s)s.value='';
+  renderFees();
+}
 function renderDash(){
   const paid=fees.filter(f=>f.status==='Paid').reduce((s,f)=>s+f.amount,0);
   const pend=fees.filter(f=>f.status==='Pending').reduce((s,f)=>s+f.amount,0);
@@ -498,11 +512,15 @@ function renderDash(){
 }
 
 function renderStu(){
-  const q=(el('search-stu')||{value:''}).value.toLowerCase();
-  const cls=(el('filter-cls')||{value:''}).value;
+  const qEl=el('search-stu');
+  const clsEl=el('filter-cls');
+  const q=qEl?qEl.value.trim().toLowerCase():'';
+  const cls=clsEl?clsEl.value:'';
+  console.log('Filter - cls:',cls,'q:',q,'total students:',students.length);
   let f=students;
-  if(cls) f=f.filter(s=>s.cls===cls);
+  if(cls) f=f.filter(s=>(s.cls||'').trim()===cls.trim());
   if(q) f=f.filter(s=>(s.name||'').toLowerCase().includes(q));
+  console.log('Filtered count:',f.length);
   el('s-table').innerHTML=f.length?f.map(s=>`<tr>
     <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td>
     <td>${s.cls||'-'}</td><td style="font-family:monospace;font-size:12px">${s.username||'-'}</td>
