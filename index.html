@@ -2,8 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-<meta http-equiv="Pragma" content="no-cache"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LFA School Portal</title>
 <style>
@@ -105,7 +103,13 @@ tr:hover td{background:#F5F3FF}
 .loading{text-align:center;padding:2rem;color:#9CA3AF;font-size:14px}
 .toast{position:fixed;bottom:24px;right:24px;background:#2D1B69;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;display:none}
 .toast.show{display:block}
-.search-box{width:100%;padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;margin-bottom:1rem;outline:none}
+.filter-bar{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{padding:9px 12px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;outline:none}
+.filter-bar input{flex:1;min-width:150px}
+.filter-bar .btn-search{padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.filter-bar .btn-clear{padding:9px 14px;background:#fff;color:#374151;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer}
+.fee-summary{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.fee-tag{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600}
 </style>
 </head>
 <body>
@@ -144,73 +148,88 @@ tr:hover td{background:#F5F3FF}
     <button class="logout-btn" onclick="logout()">Sign out</button>
   </div>
   <div class="main">
+
     <div class="page active" id="a-pg-dashboard">
-      <div class="ph"><div class="ptitle">Dashboard</div><div id="debug" style="font-size:13px;color:#2D1B69;background:#EDE9FE;padding:6px 12px;border-radius:8px">Loading...</div></div>
+      <div class="ph"><div class="ptitle">Dashboard</div></div>
       <div class="stats">
-        <div class="stat stat-0"><div class="stat-label">Total students</div><div class="stat-value" id="d-stu">—</div></div>
-        <div class="stat stat-1"><div class="stat-label">Fees collected</div><div class="stat-value" id="d-col">—</div></div>
-        <div class="stat stat-2"><div class="stat-label">Fees pending</div><div class="stat-value" id="d-pen">—</div></div>
-        <div class="stat stat-3"><div class="stat-label">Avg attendance</div><div class="stat-value" id="d-att">—</div></div>
+        <div class="stat stat-0"><div class="stat-label">Total students</div><div class="stat-value" id="d-stu">-</div></div>
+        <div class="stat stat-1"><div class="stat-label">Fees collected</div><div class="stat-value" id="d-col">-</div></div>
+        <div class="stat stat-2"><div class="stat-label">Fees pending</div><div class="stat-value" id="d-pen">-</div></div>
+        <div class="stat stat-3"><div class="stat-label">Avg attendance</div><div class="stat-value" id="d-att">-</div></div>
       </div>
       <div class="card"><table>
         <thead><tr><th style="width:30%">Name</th><th style="width:20%">Class</th><th style="width:25%">Fee status</th><th style="width:25%">Attendance</th></tr></thead>
         <tbody id="d-table"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
       </table></div>
     </div>
+
     <div class="page" id="a-pg-students">
       <div class="ph"><div class="ptitle">Students</div><button class="btn btn-purple" onclick="openMod('stu')">+ Add student</button></div>
-      <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
-        <select id="filter-cls" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;width:160px">
+      <div class="filter-bar">
+        <select id="filter-cls">
           <option value="">Select class</option>
           <option>NURSERY</option><option>LKG</option><option>HKG</option>
-          <option>First</option><option>Second</option><option>Third</option>
-          <option>Fourth</option><option>Fifth</option><option>Sixth</option>
-          <option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option>
+          <option>First</option><option>Second</option><option>Third</option><option>Fourth</option>
+          <option>Fifth</option><option>Sixth</option><option>Seventh</option>
+          <option>Eight</option><option>Ninth</option><option>Tenth</option>
         </select>
-        <input id="search-stu" placeholder="Or search by name..." style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;width:200px;outline:none"/>
-        <button onclick="renderStu()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
-        <button onclick="clearStuFilter()" style="padding:9px 14px;background:#fff;color:#6B7280;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Show all</button>
+        <input id="search-stu" placeholder="Search by name..."/>
+        <button class="btn-search" onclick="renderStu()">Search</button>
+        <button class="btn-clear" onclick="clearStuFilter()">Clear</button>
       </div>
-      <div id="stu-count" style="font-size:13px;color:#6B7280;margin-bottom:0.75rem"></div>
       <div class="card"><table>
         <thead><tr><th style="width:22%">Name</th><th style="width:12%">Class</th><th style="width:16%">Username</th><th style="width:18%">Parent</th><th style="width:12%">Password</th><th style="width:10%">Share</th><th style="width:10%"></th></tr></thead>
-        <tbody id="s-table"><tr><td colspan="7" class="loading">Select a class or search by name to see students.</td></tr></tbody>
+        <tbody id="s-table"><tr><td colspan="7" class="loading">Select a class or search by name.</td></tr></tbody>
       </table></div>
     </div>
+
     <div class="page" id="a-pg-fees">
       <div class="ph"><div class="ptitle">Fees</div><button class="btn btn-purple" onclick="openMod('fee')">+ Record payment</button></div>
-      <div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;align-items:center">
-        <select id="filter-fee-cls" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;width:160px">
+      <div class="filter-bar">
+        <select id="filter-fee-cls">
           <option value="">Select class</option>
           <option>NURSERY</option><option>LKG</option><option>HKG</option>
-          <option>First</option><option>Second</option><option>Third</option>
-          <option>Fourth</option><option>Fifth</option><option>Sixth</option>
-          <option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option>
+          <option>First</option><option>Second</option><option>Third</option><option>Fourth</option>
+          <option>Fifth</option><option>Sixth</option><option>Seventh</option>
+          <option>Eight</option><option>Ninth</option><option>Tenth</option>
         </select>
-        <select id="filter-fee-status" style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;background:#fff;color:#374151;width:140px">
+        <select id="filter-fee-status">
           <option value="">All status</option>
           <option>Paid</option><option>Pending</option>
         </select>
-        <button onclick="renderFees()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
-        <button onclick="clearFeeFilter()" style="padding:9px 14px;background:#fff;color:#6B7280;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Show all</button>
+        <button class="btn-search" onclick="renderFees()">Search</button>
+        <button class="btn-clear" onclick="clearFeeFilter()">Clear</button>
       </div>
       <div id="fee-summary"></div>
       <div class="card"><table>
         <thead><tr><th style="width:28%">Student</th><th style="width:18%">Class</th><th style="width:18%">Amount</th><th style="width:18%">Month</th><th style="width:18%">Status</th></tr></thead>
-        <tbody id="f-table"><tr><td colspan="5" class="loading">Select a class or status to see fee records.</td></tr></tbody>
+        <tbody id="f-table"><tr><td colspan="5" class="loading">Select a class to see fee records.</td></tr></tbody>
       </table></div>
     </div>
+
     <div class="page" id="a-pg-timetable">
       <div class="ph"><div class="ptitle">Timetable</div></div>
       <div class="tt-grid" id="tt"></div>
     </div>
+
     <div class="page" id="a-pg-attendance">
-      <div class="ph"><div class="ptitle">Attendance</div><span style="font-size:12px;color:#9CA3AF">Tap circles to mark present / absent</span></div>
-      <input class="search-box" id="search-att" placeholder="Search student..." oninput="renderAtt()"/>
-      <div id="att-list"><div class="loading">Loading...</div></div>
+      <div class="ph"><div class="ptitle">Attendance</div><span style="font-size:12px;color:#9CA3AF">Tap circles to mark present/absent</span></div>
+      <div class="filter-bar">
+        <select id="filter-att-cls" onchange="renderAtt()">
+          <option value="">Select class</option>
+          <option>NURSERY</option><option>LKG</option><option>HKG</option>
+          <option>First</option><option>Second</option><option>Third</option><option>Fourth</option>
+          <option>Fifth</option><option>Sixth</option><option>Seventh</option>
+          <option>Eight</option><option>Ninth</option><option>Tenth</option>
+        </select>
+        <input id="search-att" placeholder="Search by name..." oninput="renderAtt()"/>
+      </div>
+      <div id="att-list"><div class="loading">Select a class to see attendance.</div></div>
     </div>
+
   </div>
 </div>
+
 <div class="overlay" id="mod-stu">
   <div class="modal">
     <div class="modal-title">Add new student</div>
@@ -225,11 +244,12 @@ tr:hover td{background:#F5F3FF}
     </div>
   </div>
 </div>
+
 <div class="overlay" id="mod-cred">
   <div class="modal">
     <div class="modal-title">Student added!</div>
     <div class="cred-box">
-      <div class="cred-title"><span class="cred-check">OK</span>Share login details</div>
+      <div class="cred-title"><span class="cred-check">OK</span> Share login details</div>
       <div class="cred-row"><span class="cred-label">Name</span><span class="cred-val" id="c-name">-</span></div>
       <div class="cred-row"><span class="cred-label">Class</span><span class="cred-val" id="c-cls">-</span></div>
       <div class="cred-row"><span class="cred-label">Username</span><span class="cred-val" id="c-user">-</span></div>
@@ -243,11 +263,12 @@ tr:hover td{background:#F5F3FF}
     </div>
   </div>
 </div>
+
 <div class="overlay" id="mod-fee">
   <div class="modal">
     <div class="modal-title">Record fee payment</div>
     <div class="mfg"><label>Student</label><select id="fs"></select></div>
-    <div class="mfg"><label>Amount</label><input id="fa" type="number"/></div>
+    <div class="mfg"><label>Amount (Rs.)</label><input id="fa" type="number"/></div>
     <div class="mfg"><label>Month</label><select id="fm"><option>January</option><option>February</option><option>March</option><option>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option></select></div>
     <div class="mfg"><label>Status</label><select id="fst"><option>Paid</option><option>Pending</option></select></div>
     <div class="modal-actions">
@@ -331,175 +352,249 @@ const teachers=["Mr. Arora","Mrs. Joshi","Mr. Verma","Mrs. Nair","Mr. Kapoor"];
 const subC={"Math":"#DBEAFE","Science":"#D1FAE5","English":"#EDE9FE","Hindi":"#FEF3C7","Art":"#FCE7F3"};
 const subT={"Math":"#1E40AF","Science":"#065F46","English":"#5B21B6","Hindi":"#92400E","Art":"#9D174D"};
 
-const el=id=>document.getElementById(id);
-window.ini=function(n){return n?n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??';}
-window.toast=function(m){const t=el('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-window.pct=function(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
-window.showScr=function(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));el(id).classList.add('active');}
+const el = id => document.getElementById(id);
+const ini = n => n ? n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) : '??';
+const toast = m => { const t=el('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); };
+const pct = k => { const a=att[k]; if(!a||!Array.isArray(a))return 0; return Math.round(a.filter(x=>x).length/a.length*100); };
+const showScr = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); el(id).classList.add('active'); };
 
-window.setRole=r=>{role=r;document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));el('l-err').textContent='';};
-
-window.doLogin=()=>{
-  const u=el('l-user').value.trim().toLowerCase();
-  const p=el('l-pass').value.trim();
+window.setRole = r => {
+  role=r;
+  document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));
   el('l-err').textContent='';
-  if(!u||!p){el('l-err').textContent='Enter username and password.';return;}
+};
+
+window.doLogin = () => {
+  const u = el('l-user').value.trim().toLowerCase();
+  const p = el('l-pass').value.trim();
+  const err = el('l-err');
+  const btn = el('login-btn');
+  err.textContent='';
+  if(!u||!p){ err.textContent='Enter username and password.'; return; }
   if(role==='admin'){
-    if(u==='admin'&&p==='admin123') showAdmin();
-    else el('l-err').textContent='Wrong username or password.';
+    if(u==='admin' && p==='admin123') showAdmin();
+    else err.textContent='Wrong username or password.';
   } else {
-    el('l-err').textContent='Signing in...';
-    el('login-btn').disabled=true;
-    get(query(ref(db,'students'),orderByChild('username'),equalTo(u))).then(snap=>{
-      el('login-btn').disabled=false;
-      if(!snap.exists()){el('l-err').textContent='Username not found.';return;}
+    err.textContent='Signing in...';
+    btn.disabled=true;
+    get(query(ref(db,'students'), orderByChild('username'), equalTo(u))).then(snap=>{
+      btn.disabled=false;
+      if(!snap.exists()){ err.textContent='Username not found.'; return; }
       let found=null;
-      snap.forEach(c=>{const s={fbKey:c.key,...c.val()};if(s.pass===p)found=s;});
-      if(found){el('l-err').textContent='';showStudent(found);}
-      else el('l-err').textContent='Wrong password.';
-    }).catch(()=>{el('login-btn').disabled=false;el('l-err').textContent='Connection error.';});
+      snap.forEach(c=>{ const s={fbKey:c.key,...c.val()}; if(s.pass===p) found=s; });
+      if(found){ err.textContent=''; showStudent(found); }
+      else err.textContent='Wrong password.';
+    }).catch(()=>{ btn.disabled=false; err.textContent='Connection error. Try again.'; });
   }
 };
 
-async window.showAdmin = function(){
+async function showAdmin(){
   showScr('screen-admin');
-  el('d-table').innerHTML='<tr><td colspan="4" class="loading">Loading students...</td></tr>';
-  el('s-table').innerHTML='<tr><td colspan="7" class="loading">Loading students...</td></tr>';
-
-  // Step 1: load ONLY students first (exactly like test.html)
-  const stuSnap = await get(ref(db,'students'));
+  const [stuSnap, feeSnap, attSnap] = await Promise.all([
+    get(ref(db,'students')),
+    get(ref(db,'fees')),
+    get(ref(db,'attendance'))
+  ]);
   students=[];
-  let count=0;
-  stuSnap.forEach(c=>{
-    count++;
-    try{ students.push({fbKey:c.key,...c.val()}); }catch(e){ console.error('Error on student',c.key,e); }
-  });
-  const dbg=document.getElementById('debug');
-  if(dbg) dbg.textContent='Firebase returned: '+count+' students, pushed: '+students.length;
-  console.log('Students count:',count,'pushed:',students.length);
-  renderDash();
-  renderStu();
-
-  // Step 2: load fees and attendance after
-  const feeSnap = await get(ref(db,'fees'));
+  stuSnap.forEach(c=>students.push({fbKey:c.key,...c.val()}));
   fees=[];
   feeSnap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
-
-  const attSnap = await get(ref(db,'attendance'));
   att={};
-  attSnap.forEach(c=>{att[c.key]=c.val();});
-
+  attSnap.forEach(c=>{ att[c.key]=c.val(); });
+  console.log('Students loaded:',students.length);
   renderDash();
 }
 
-async window.showStudent = function(s){
+async function showStudent(s){
   currentStu=s;
   showScr('screen-student');
   el('stu-name-side').textContent=s.name;
-  const [feeSnap,attSnap]=await Promise.all([get(ref(db,'fees')),get(ref(db,'attendance'))]);
-  fees=[];feeSnap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
-  att={};attSnap.forEach(c=>{att[c.key]=c.val();});
+  const [feeSnap,attSnap] = await Promise.all([get(ref(db,'fees')),get(ref(db,'attendance'))]);
+  fees=[]; feeSnap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
+  att={}; attSnap.forEach(c=>{ att[c.key]=c.val(); });
   sGo('profile');
 }
 
-window.logout=()=>{el('l-user').value='';el('l-pass').value='';currentStu=null;students=[];fees=[];att={};showScr('screen-login');};
+window.logout = () => {
+  el('l-user').value=''; el('l-pass').value='';
+  currentStu=null; students=[]; fees=[]; att={};
+  showScr('screen-login');
+};
 
-window.aGo=p=>{
+window.aGo = p => {
   document.querySelectorAll('#screen-admin .page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('#screen-admin .nav-btn').forEach(x=>x.classList.remove('active'));
   el('a-pg-'+p).classList.add('active');
   document.querySelectorAll('#screen-admin .nav-btn')[{dashboard:0,students:1,fees:2,timetable:3,attendance:4}[p]].classList.add('active');
-  if(p==='dashboard')renderDash();
-  else if(p==='students')renderStu();
-  else if(p==='fees')renderFees();
-  else if(p==='timetable')renderTT('tt');
-  else if(p==='attendance')renderAtt();
+  if(p==='dashboard') renderDash();
+  else if(p==='timetable') renderTT('tt');
 };
 
-window.sGo=p=>{
+window.sGo = p => {
   document.querySelectorAll('#screen-student .page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('#screen-student .nav-btn').forEach(x=>x.classList.remove('active'));
   el('s-pg-'+p).classList.add('active');
   document.querySelectorAll('#screen-student .nav-btn')[{profile:0,fees:1,attendance:2,timetable:3}[p]].classList.add('active');
-  if(p==='profile')renderStuProfile();
-  else if(p==='fees')renderStuFees();
-  else if(p==='attendance')renderStuAtt();
-  else if(p==='timetable')renderTT('s-tt');
+  if(p==='profile') renderStuProfile();
+  else if(p==='fees') renderStuFees();
+  else if(p==='attendance') renderStuAtt();
+  else if(p==='timetable') renderTT('s-tt');
 };
 
-window.openMod=id=>{if(id==='fee')el('fs').innerHTML=students.map(s=>`<option value="${s.fbKey}">${s.name} (${s.cls})</option>`).join('');el('mod-'+id).classList.add('open');};
-window.closeMod=id=>el('mod-'+id).classList.remove('open');
+window.openMod = id => {
+  if(id==='fee') el('fs').innerHTML=students.map(s=>`<option value="${s.fbKey}">${s.name} (${s.cls})</option>`).join('');
+  el('mod-'+id).classList.add('open');
+};
+window.closeMod = id => el('mod-'+id).classList.remove('open');
 
-window.addStu=()=>{
-  const name=el('sn').value.trim();if(!name)return;
-  const pw=el('spw').value.trim()||'school123';
-  const parts=name.toLowerCase().split(' ');
-  const username=(parts.length>=2?parts[0]+'.'+parts[parts.length-1]:parts[0]).replace(/[^a-z.]/g,'');
-  const s={name,cls:el('sc').value,parent:el('sp').value||'-',phone:el('sph').value||'-',pass:pw,username,roll:0};
-  const nr=push(ref(db,'students'));
+window.renderStu = () => {
+  const cls = el('filter-cls').value.trim();
+  const q = el('search-stu').value.trim().toLowerCase();
+  if(!cls && !q){
+    el('s-table').innerHTML='<tr><td colspan="7" class="loading">Select a class or type a name to search.</td></tr>';
+    return;
+  }
+  let f = students;
+  if(cls) f = f.filter(s => (s.cls||'').trim() === cls);
+  if(q) f = f.filter(s => (s.name||'').toLowerCase().includes(q));
+  el('s-table').innerHTML = f.length
+    ? f.map(s=>`<tr>
+        <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td>
+        <td>${s.cls||'-'}</td>
+        <td style="font-family:monospace;font-size:12px">${s.username||'-'}</td>
+        <td>${s.parent||'-'}</td>
+        <td style="color:#9CA3AF;font-size:12px;font-family:monospace">${s.pass||'-'}</td>
+        <td><button class="btn-green" onclick="shareWADirect('${s.fbKey}')">WA</button></td>
+        <td><button class="btn-sm" onclick="rmStu('${s.fbKey}')">X</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" class="loading">No students found.</td></tr>';
+};
+
+window.clearStuFilter = () => {
+  el('filter-cls').value='';
+  el('search-stu').value='';
+  el('s-table').innerHTML='<tr><td colspan="7" class="loading">Select a class or type a name to search.</td></tr>';
+};
+
+window.renderFees = () => {
+  const cls = el('filter-fee-cls').value.trim();
+  const status = el('filter-fee-status').value.trim();
+  if(!cls && !status){
+    el('fee-summary').innerHTML='';
+    el('f-table').innerHTML='<tr><td colspan="5" class="loading">Select a class to see fee records.</td></tr>';
+    return;
+  }
+  let f = fees;
+  if(cls) f = f.filter(x => (x.sCls||'').trim() === cls);
+  if(status) f = f.filter(x => x.status === status);
+  const paid = f.filter(x=>x.status==='Paid').reduce((s,x)=>s+x.amount,0);
+  const pend = f.filter(x=>x.status==='Pending').reduce((s,x)=>s+x.amount,0);
+  el('fee-summary').innerHTML=`<div class="fee-summary">
+    <div class="fee-tag" style="background:#D1FAE5;color:#065F46">Paid: Rs.${paid.toLocaleString('en-IN')}</div>
+    <div class="fee-tag" style="background:#FEF3C7;color:#92400E">Pending: Rs.${pend.toLocaleString('en-IN')}</div>
+    <div class="fee-tag" style="background:#EDE9FE;color:#2D1B69">Records: ${f.length}</div>
+  </div>`;
+  el('f-table').innerHTML = f.length
+    ? f.map(x=>`<tr>
+        <td>${x.sName||'-'}</td><td>${x.sCls||'-'}</td>
+        <td style="font-weight:600">Rs.${(x.amount||0).toLocaleString('en-IN')}</td>
+        <td>${x.month}</td>
+        <td><span class="pill ${x.status==='Paid'?'pill-ok':'pill-warn'}">${x.status}</span></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" class="loading">No records found.</td></tr>';
+};
+
+window.clearFeeFilter = () => {
+  el('filter-fee-cls').value='';
+  el('filter-fee-status').value='';
+  el('fee-summary').innerHTML='';
+  el('f-table').innerHTML='<tr><td colspan="5" class="loading">Select a class to see fee records.</td></tr>';
+};
+
+window.renderAtt = () => {
+  const cls = el('filter-att-cls').value.trim();
+  const q = el('search-att').value.trim().toLowerCase();
+  if(!cls && !q){ el('att-list').innerHTML='<div class="loading">Select a class to see attendance.</div>'; return; }
+  let f = students;
+  if(cls) f = f.filter(s=>(s.cls||'').trim()===cls);
+  if(q) f = f.filter(s=>(s.name||'').toLowerCase().includes(q));
+  el('att-list').innerHTML = f.length
+    ? f.map(s=>{
+        const a=att[s.fbKey]||[0,0,0,0,0,0,0];
+        const p=pct(s.fbKey);
+        return`<div class="att-row">
+          <div class="att-top">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar">${ini(s.name)}</div>
+              <div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div>
+            </div>
+            <span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}% present</span>
+          </div>
+          <div class="days-row">${days.map((d,i)=>`
+            <div class="day-item">
+              <div class="day-lbl">${d}</div>
+              <div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div>
+            </div>`).join('')}
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="loading">No students found.</div>';
+};
+
+window.addStu = () => {
+  const name = el('sn').value.trim(); if(!name) return;
+  const pw = el('spw').value.trim() || 'school123';
+  const parts = name.toLowerCase().split(' ');
+  const username = (parts.length>=2 ? parts[0]+'.'+parts[parts.length-1] : parts[0]).replace(/[^a-z.]/g,'');
+  const s = {name, cls:el('sc').value, parent:el('sp').value||'-', phone:el('sph').value||'-', pass:pw, username, roll:0};
+  const nr = push(ref(db,'students'));
   set(nr,s).then(()=>{
     set(ref(db,'attendance/'+nr.key),[0,0,0,0,0,0,0]);
     lastAdded={fbKey:nr.key,...s};
     students.push(lastAdded);
     ['sn','sp','sph','spw'].forEach(i=>el(i).value='');
-    closeMod('stu');showCredPopup(lastAdded);renderStu();toast('Student saved!');
+    closeMod('stu');
+    el('c-name').textContent=s.name; el('c-cls').textContent=s.cls;
+    el('c-user').textContent=s.username; el('c-pass').textContent=s.pass;
+    el('c-phone').textContent=s.phone; el('copy-btn').textContent='Copy';
+    openMod('cred'); toast('Student saved!');
   });
 };
 
-window.showCredPopup=function(s){el('c-name').textContent=s.name;el('c-cls').textContent=s.cls;el('c-user').textContent=s.username;el('c-pass').textContent=s.pass;el('c-phone').textContent=s.phone;el('copy-btn').textContent='Copy';openMod('cred');}
-
-window.shareWA=()=>{
-  if(!lastAdded)return;
+window.shareWA = () => {
+  if(!lastAdded) return;
   const s=lastAdded;
   const msg=`*LFA School Login*\n\nDear Parent of ${s.name},\n\n*Username:* ${s.username}\n*Password:* ${s.pass}\n\nLogin: https://tabishakhter.github.io/LFA/\n\n_School Admin_`;
   window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
 };
-
-window.shareWADirect=fbKey=>{const s=students.find(st=>st.fbKey===fbKey);if(s){lastAdded=s;shareWA();}};
-
-window.copyCreds=()=>{
-  if(!lastAdded)return;
-  navigator.clipboard.writeText(`LFA School\nUsername: ${lastAdded.username}\nPassword: ${lastAdded.pass}`).then(()=>{el('copy-btn').textContent='Copied!';setTimeout(()=>el('copy-btn').textContent='Copy',2000);});
+window.shareWADirect = fbKey => { const s=students.find(st=>st.fbKey===fbKey); if(s){lastAdded=s;shareWA();} };
+window.copyCreds = () => {
+  if(!lastAdded) return;
+  navigator.clipboard.writeText(`LFA School\nUsername: ${lastAdded.username}\nPassword: ${lastAdded.pass}`)
+    .then(()=>{ el('copy-btn').textContent='Copied!'; setTimeout(()=>el('copy-btn').textContent='Copy',2000); });
 };
-
-window.rmStu=fbKey=>{
-  if(!confirm('Remove this student?'))return;
-  remove(ref(db,'students/'+fbKey));
-  remove(ref(db,'attendance/'+fbKey));
+window.rmStu = fbKey => {
+  if(!confirm('Remove this student?')) return;
+  remove(ref(db,'students/'+fbKey)); remove(ref(db,'attendance/'+fbKey));
   students=students.filter(s=>s.fbKey!==fbKey);
-  renderStu();toast('Removed.');
+  renderStu(); toast('Removed.');
 };
-
-window.addFee=async()=>{
+window.addFee = async () => {
   const fbKey=el('fs').value;
   const s=students.find(st=>st.fbKey===fbKey);
   await push(ref(db,'fees'),{sid:fbKey,sName:s?s.name:'',sCls:s?s.cls:'',amount:parseInt(el('fa').value)||0,month:el('fm').value,status:el('fst').value});
-  el('fa').value='';closeMod('fee');
+  el('fa').value=''; closeMod('fee');
   const snap=await get(ref(db,'fees'));
-  fees=[];snap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
-  renderFees();renderDash();toast('Fee saved!');
+  fees=[]; snap.forEach(c=>fees.push({fbKey:c.key,...c.val()}));
+  renderDash(); toast('Fee saved!');
 };
-
-window.toggleAtt=(fbKey,idx)=>{
+window.toggleAtt = (fbKey,idx) => {
   const a=att[fbKey]?[...att[fbKey]]:[0,0,0,0,0,0,0];
-  a[idx]=a[idx]?0:1;att[fbKey]=a;
-  update(ref(db,'attendance'),{[fbKey]:a}).then(()=>{renderAtt();toast('Updated!');});
+  a[idx]=a[idx]?0:1; att[fbKey]=a;
+  update(ref(db,'attendance'),{[fbKey]:a}).then(()=>{ renderAtt(); toast('Updated!'); });
 };
 
-window.clearStuFilter=function(){
-  el('filter-cls').value='';
-  el('search-stu').value='';
-  el('stu-count').textContent='';
-  el('s-table').innerHTML='<tr><td colspan="7" class="loading">Select a class or search by name above.</td></tr>';
-}
-window.clearFeeFilter=function(){
-  el('filter-fee-cls').value='';
-  el('filter-fee-status').value='';
-  const sumEl=el('fee-summary');
-  if(sumEl) sumEl.innerHTML='';
-  el('f-table').innerHTML='<tr><td colspan="5" class="loading">Select a class or status and click Search.</td></tr>';
-}
-window.renderDash=function(){
+function renderDash(){
   const paid=fees.filter(f=>f.status==='Paid').reduce((s,f)=>s+f.amount,0);
   const pend=fees.filter(f=>f.status==='Pending').reduce((s,f)=>s+f.amount,0);
   const avg=students.length?Math.round(students.reduce((s,st)=>s+pct(st.fbKey),0)/students.length):0;
@@ -507,62 +602,17 @@ window.renderDash=function(){
   el('d-col').textContent='Rs.'+paid.toLocaleString('en-IN');
   el('d-pen').textContent='Rs.'+pend.toLocaleString('en-IN');
   el('d-att').textContent=avg+'%';
-  el('d-table').innerHTML=students.length?students.slice(0,50).map(s=>{
-    const sf=fees.filter(f=>f.sid===s.fbKey);
-    const fs=sf.length?(sf.every(f=>f.status==='Paid')?'Paid':'Pending'):'No record';
-    const ap=pct(s.fbKey);
-    return`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td><span class="pill ${fs==='Paid'?'pill-ok':fs==='Pending'?'pill-warn':'pill-mute'}">${fs}</span></td><td><span class="pill ${ap>=75?'pill-ok':ap>=50?'pill-warn':'pill-bad'}">${ap}%</span></td></tr>`;
-  }).join(''):'<tr><td colspan="4" class="loading">No students.</td></tr>';
+  el('d-table').innerHTML=students.length
+    ? students.slice(0,50).map(s=>{
+        const sf=fees.filter(f=>f.sid===s.fbKey);
+        const fs=sf.length?(sf.every(f=>f.status==='Paid')?'Paid':'Pending'):'No record';
+        const ap=pct(s.fbKey);
+        return`<tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${ini(s.name)}</div>${s.name}</div></td><td>${s.cls}</td><td><span class="pill ${fs==='Paid'?'pill-ok':fs==='Pending'?'pill-warn':'pill-mute'}">${fs}</span></td><td><span class="pill ${ap>=75?'pill-ok':ap>=50?'pill-warn':'pill-bad'}">${ap}%</span></td></tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="loading">No students.</td></tr>';
 }
 
-window.renderStu=function(){
-  const q=(el('search-stu')||{value:''}).value.trim().toLowerCase();
-  const cls=(el('filter-cls')||{value:''}).value.trim();
-  // By default show nothing until a filter is applied
-  if(!q && !cls){
-    el('s-table').innerHTML='<tr><td colspan="7" class="loading">Select a class or search by name to see students.</td></tr>';
-    return;
-  }
-  let f=students;
-  if(cls) f=f.filter(s=>(s.cls||'').trim()===cls);
-  if(q) f=f.filter(s=>(s.name||'').toLowerCase().includes(q));
-}
-
-window.renderFees=function(){
-  const cls=(el('filter-fee-cls')||{value:''}).value.trim();
-  const status=(el('filter-fee-status')||{value:''}).value.trim();
-  const sumEl=el('fee-summary');
-
-  // By default show placeholder
-  if(!cls && !status){
-    if(sumEl) sumEl.innerHTML='';
-    el('f-table').innerHTML='<tr><td colspan="5" class="loading">Select a class or status to see fee records.</td></tr>';
-    return;
-  }
-
-  let f=fees;
-  if(cls) f=f.filter(x=>(x.sCls||'').trim()===cls);
-  if(status) f=f.filter(x=>x.status===status);
-
-  const paid=f.filter(x=>x.status==='Paid').reduce((s,x)=>s+x.amount,0);
-  const pend=f.filter(x=>x.status==='Pending').reduce((s,x)=>s+x.amount,0);
-  
-  if(sumEl) sumEl.innerHTML=`<div style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
-    <div style="background:#D1FAE5;color:#065F46;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600">Paid: Rs.${paid.toLocaleString('en-IN')}</div>
-    <div style="background:#FEF3C7;color:#92400E;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600">Pending: Rs.${pend.toLocaleString('en-IN')}</div>
-    <div style="background:#EDE9FE;color:#2D1B69;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600">Records: ${f.length}</div>
-  </div>`;
-  
-  el('f-table').innerHTML=f.length?f.map(x=>`<tr>
-    <td>${x.sName||'-'}</td>
-    <td>${x.sCls||'-'}</td>
-    <td style="font-weight:600">Rs.${(x.amount||0).toLocaleString('en-IN')}</td>
-    <td>${x.month}</td>
-    <td><span class="pill ${x.status==='Paid'?'pill-ok':'pill-warn'}">${x.status}</span></td>
-  </tr>`).join(''):'<tr><td colspan="5" class="loading">No records found.</td></tr>';
-}
-
-window.renderTT=function(cid){
+function renderTT(cid){
   const tt=el(cid);
   tt.innerHTML='<div></div>'+['Mon','Tue','Wed','Thu','Fri'].map(d=>`<div class="tt-head">${d}</div>`).join('');
   ttData.forEach(row=>{
@@ -571,33 +621,23 @@ window.renderTT=function(cid){
   });
 }
 
-window.renderAtt=function(){
-  const q=(el('search-att')||{value:''}).value.toLowerCase();
-  const f=q?students.filter(s=>(s.name||'').toLowerCase().includes(q)):students;
-  el('att-list').innerHTML=f.length?f.map(s=>{
-    const a=att[s.fbKey]||[0,0,0,0,0,0,0];
-    const p=pct(s.fbKey);
-    return`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle clickable ${a[i]?'present':'absent'}" onclick="toggleAtt('${s.fbKey}',${i})">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
-  }).join(''):`<div class="loading">${students.length?'No results.':'Loading...'}</div>`;
-}
-
-window.renderStuProfile=function(){
-  const s=currentStu;if(!s)return;
-  el('sp-name').textContent=s.name||'-';el('sp-cls').textContent=s.cls||'-';
-  el('sp-user').textContent=s.username||'-';el('sp-parent').textContent=s.parent||'-';
+function renderStuProfile(){
+  const s=currentStu; if(!s) return;
+  el('sp-name').textContent=s.name||'-'; el('sp-cls').textContent=s.cls||'-';
+  el('sp-user').textContent=s.username||'-'; el('sp-parent').textContent=s.parent||'-';
   el('sp-phone').textContent=s.phone||'-';
   const p=pct(s.fbKey);
   el('sp-att').innerHTML=`<span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span>`;
 }
-
-window.renderStuFees=function(){
-  const s=currentStu;if(!s)return;
+function renderStuFees(){
+  const s=currentStu; if(!s) return;
   const sf=fees.filter(f=>f.sid===s.fbKey);
-  el('sf-table').innerHTML=sf.length?sf.map(f=>`<tr><td>${f.month}</td><td>Rs.${(f.amount||0).toLocaleString('en-IN')}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join(''):'<tr><td colspan="3" class="loading">No records.</td></tr>';
+  el('sf-table').innerHTML=sf.length
+    ? sf.map(f=>`<tr><td>${f.month}</td><td>Rs.${(f.amount||0).toLocaleString('en-IN')}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join('')
+    : '<tr><td colspan="3" class="loading">No records.</td></tr>';
 }
-
-window.renderStuAtt=function(){
-  const s=currentStu;if(!s)return;
+function renderStuAtt(){
+  const s=currentStu; if(!s) return;
   const a=att[s.fbKey]||[0,0,0,0,0,0,0];
   const p=pct(s.fbKey);
   el('s-att-wrap').innerHTML=`<div class="att-row"><div class="att-top"><div style="display:flex;align-items:center;gap:10px"><div class="avatar">${ini(s.name)}</div><div><div class="att-name">${s.name}</div><div class="att-sub">${s.cls}</div></div></div><span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span></div><div class="days-row">${days.map((d,i)=>`<div class="day-item"><div class="day-lbl">${d}</div><div class="day-circle ${a[i]?'present':'absent'}">${a[i]?'P':'A'}</div></div>`).join('')}</div></div>`;
