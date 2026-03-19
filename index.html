@@ -168,7 +168,7 @@ tr:hover td{background:#F5F3FF}
           <option>Seventh</option><option>Eight</option><option>Ninth</option><option>Tenth</option>
         </select>
         <input id="search-stu" placeholder="Or search by name..." style="padding:9px 14px;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;width:200px;outline:none"/>
-        <button onclick="applyStudentFilter()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
+        <button onclick="renderStu()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
         <button onclick="clearStuFilter()" style="padding:9px 14px;background:#fff;color:#6B7280;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Show all</button>
       </div>
       <div id="stu-count" style="font-size:13px;color:#6B7280;margin-bottom:0.75rem"></div>
@@ -191,7 +191,7 @@ tr:hover td{background:#F5F3FF}
           <option value="">All status</option>
           <option>Paid</option><option>Pending</option>
         </select>
-        <button onclick="applyFeeFilter()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
+        <button onclick="renderFees()" style="padding:9px 20px;background:#2D1B69;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Search</button>
         <button onclick="clearFeeFilter()" style="padding:9px 14px;background:#fff;color:#6B7280;border:1px solid #D1D5DB;border-radius:8px;font-size:13px;cursor:pointer">Show all</button>
       </div>
       <div id="fee-summary"></div>
@@ -332,10 +332,10 @@ const subC={"Math":"#DBEAFE","Science":"#D1FAE5","English":"#EDE9FE","Hindi":"#F
 const subT={"Math":"#1E40AF","Science":"#065F46","English":"#5B21B6","Hindi":"#92400E","Art":"#9D174D"};
 
 const el=id=>document.getElementById(id);
-function ini(n){return n?n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??';}
-function toast(m){const t=el('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-function pct(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
-function showScr(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));el(id).classList.add('active');}
+window.ini=function(n){return n?n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2):'??';}
+window.toast=function(m){const t=el('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.pct=function(k){const a=att[k];if(!a||!Array.isArray(a))return 0;return Math.round(a.filter(x=>x).length/a.length*100);}
+window.showScr=function(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));el(id).classList.add('active');}
 
 window.setRole=r=>{role=r;document.querySelectorAll('.role-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));el('l-err').textContent='';};
 
@@ -361,7 +361,7 @@ window.doLogin=()=>{
   }
 };
 
-async function showAdmin(){
+async window.showAdmin = function(){
   showScr('screen-admin');
   el('d-table').innerHTML='<tr><td colspan="4" class="loading">Loading students...</td></tr>';
   el('s-table').innerHTML='<tr><td colspan="7" class="loading">Loading students...</td></tr>';
@@ -392,7 +392,7 @@ async function showAdmin(){
   renderDash();
 }
 
-async function showStudent(s){
+async window.showStudent = function(s){
   currentStu=s;
   showScr('screen-student');
   el('stu-name-side').textContent=s.name;
@@ -446,7 +446,7 @@ window.addStu=()=>{
   });
 };
 
-function showCredPopup(s){el('c-name').textContent=s.name;el('c-cls').textContent=s.cls;el('c-user').textContent=s.username;el('c-pass').textContent=s.pass;el('c-phone').textContent=s.phone;el('copy-btn').textContent='Copy';openMod('cred');}
+window.showCredPopup=function(s){el('c-name').textContent=s.name;el('c-cls').textContent=s.cls;el('c-user').textContent=s.username;el('c-pass').textContent=s.pass;el('c-phone').textContent=s.phone;el('copy-btn').textContent='Copy';openMod('cred');}
 
 window.shareWA=()=>{
   if(!lastAdded)return;
@@ -486,20 +486,20 @@ window.toggleAtt=(fbKey,idx)=>{
   update(ref(db,'attendance'),{[fbKey]:a}).then(()=>{renderAtt();toast('Updated!');});
 };
 
-function clearStuFilter(){
+window.clearStuFilter=function(){
   el('filter-cls').value='';
   el('search-stu').value='';
   el('stu-count').textContent='';
   el('s-table').innerHTML='<tr><td colspan="7" class="loading">Select a class or search by name above.</td></tr>';
 }
-function clearFeeFilter(){
+window.clearFeeFilter=function(){
   el('filter-fee-cls').value='';
   el('filter-fee-status').value='';
   const sumEl=el('fee-summary');
   if(sumEl) sumEl.innerHTML='';
   el('f-table').innerHTML='<tr><td colspan="5" class="loading">Select a class or status and click Search.</td></tr>';
 }
-function renderDash(){
+window.renderDash=function(){
   const paid=fees.filter(f=>f.status==='Paid').reduce((s,f)=>s+f.amount,0);
   const pend=fees.filter(f=>f.status==='Pending').reduce((s,f)=>s+f.amount,0);
   const avg=students.length?Math.round(students.reduce((s,st)=>s+pct(st.fbKey),0)/students.length):0;
@@ -515,7 +515,7 @@ function renderDash(){
   }).join(''):'<tr><td colspan="4" class="loading">No students.</td></tr>';
 }
 
-function renderStu(){
+window.renderStu=function(){
   const q=(el('search-stu')||{value:''}).value.trim().toLowerCase();
   const cls=(el('filter-cls')||{value:''}).value.trim();
   // By default show nothing until a filter is applied
@@ -528,7 +528,7 @@ function renderStu(){
   if(q) f=f.filter(s=>(s.name||'').toLowerCase().includes(q));
 }
 
-function renderFees(){
+window.renderFees=function(){
   const cls=(el('filter-fee-cls')||{value:''}).value.trim();
   const status=(el('filter-fee-status')||{value:''}).value.trim();
   const sumEl=el('fee-summary');
@@ -562,7 +562,7 @@ function renderFees(){
   </tr>`).join(''):'<tr><td colspan="5" class="loading">No records found.</td></tr>';
 }
 
-function renderTT(cid){
+window.renderTT=function(cid){
   const tt=el(cid);
   tt.innerHTML='<div></div>'+['Mon','Tue','Wed','Thu','Fri'].map(d=>`<div class="tt-head">${d}</div>`).join('');
   ttData.forEach(row=>{
@@ -571,7 +571,7 @@ function renderTT(cid){
   });
 }
 
-function renderAtt(){
+window.renderAtt=function(){
   const q=(el('search-att')||{value:''}).value.toLowerCase();
   const f=q?students.filter(s=>(s.name||'').toLowerCase().includes(q)):students;
   el('att-list').innerHTML=f.length?f.map(s=>{
@@ -581,7 +581,7 @@ function renderAtt(){
   }).join(''):`<div class="loading">${students.length?'No results.':'Loading...'}</div>`;
 }
 
-function renderStuProfile(){
+window.renderStuProfile=function(){
   const s=currentStu;if(!s)return;
   el('sp-name').textContent=s.name||'-';el('sp-cls').textContent=s.cls||'-';
   el('sp-user').textContent=s.username||'-';el('sp-parent').textContent=s.parent||'-';
@@ -590,13 +590,13 @@ function renderStuProfile(){
   el('sp-att').innerHTML=`<span class="pill ${p>=75?'pill-ok':p>=50?'pill-warn':'pill-bad'}">${p}%</span>`;
 }
 
-function renderStuFees(){
+window.renderStuFees=function(){
   const s=currentStu;if(!s)return;
   const sf=fees.filter(f=>f.sid===s.fbKey);
   el('sf-table').innerHTML=sf.length?sf.map(f=>`<tr><td>${f.month}</td><td>Rs.${(f.amount||0).toLocaleString('en-IN')}</td><td><span class="pill ${f.status==='Paid'?'pill-ok':'pill-warn'}">${f.status}</span></td></tr>`).join(''):'<tr><td colspan="3" class="loading">No records.</td></tr>';
 }
 
-function renderStuAtt(){
+window.renderStuAtt=function(){
   const s=currentStu;if(!s)return;
   const a=att[s.fbKey]||[0,0,0,0,0,0,0];
   const p=pct(s.fbKey);
